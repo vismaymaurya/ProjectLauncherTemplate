@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ProjectLauncherTemplate.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+        x:Class="ProjectLauncherTemplate.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Settings"
+        Width="400" Height="250"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:SettingsViewModel/>
+    </Design.DataContext>
+
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock Text="Installation Directory" FontWeight="Bold"/>
+        <Grid ColumnDefinitions="*, Auto">
+            <TextBox Grid.Column="0" Text="{Binding InstallPath}" IsReadOnly="True" Margin="0,0,10,0"/>
+            <Button Grid.Column="1" Content="..." Command="{Binding BrowseCommand}"/>
+        </Grid>
+
+        <TextBlock Text="More settings coming soon..." FontStyle="Italic" Opacity="0.6" Margin="0,20,0,0"/>
+        
+        <TextBlock Text="Avalion Launcher" HorizontalAlignment="Center" Margin="0,50,0,0" Opacity="0.3"/>
+    </StackPanel>
+</Window>

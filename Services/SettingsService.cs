@@ -13,6 +13,7 @@ namespace ProjectLauncherTemplate.Services
         public SettingsService()
         {
             _settings = LoadSettings();
+            SaveSettings();
         }
 
         public LauncherSettings Settings => _settings;
@@ -25,7 +26,39 @@ namespace ProjectLauncherTemplate.Services
                 {
                     var json = File.ReadAllText(SettingsFileName);
                     var loaded = JsonConvert.DeserializeObject<LauncherSettings>(json);
-                    if (loaded != null) return loaded;
+                    if (loaded != null)
+                    {
+                        // Validate path
+                        bool isInvalid = false;
+                        if (string.IsNullOrEmpty(loaded.InstallPath))
+                        {
+                            isInvalid = true;
+                        }
+                        else
+                        {
+                            // If the directory does not exist, consider it invalid for "portability" reasons
+                            // primarily because we expect the user to want the local "Games" folder 
+                            // if they just downloaded the repo.
+                            if (!Directory.Exists(loaded.InstallPath))
+                            {
+                                isInvalid = true;
+                            }
+                        }
+
+                        if (isInvalid)
+                        {
+                            // Reset to default
+                            loaded.InstallPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Games");
+                        }
+                        
+                        // Ensure the directory exists so "IsGameInstalled" checks work on an empty folder
+                        if (!Directory.Exists(loaded.InstallPath))
+                        {
+                            Directory.CreateDirectory(loaded.InstallPath);
+                        }
+
+                        return loaded;
+                    }
                 }
                 catch
                 {

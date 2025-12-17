@@ -30,6 +30,9 @@ namespace ProjectLauncherTemplate.ViewModels
         private bool _isUpdateButtonVisible = false;
 
         [ObservableProperty]
+        private bool _isInstallButtonVisible = false;
+
+        [ObservableProperty]
         private string _gameVersionText = "v0.0.0";
 
         private GameVersion? _latestVersion;
@@ -53,6 +56,7 @@ namespace ProjectLauncherTemplate.ViewModels
             IsProgressVisible = true;
             IsPlayButtonVisible = false;
             IsUpdateButtonVisible = false;
+            IsInstallButtonVisible = false;
 
             _latestVersion = await _updateService.CheckForUpdatesAsync();
 
@@ -62,16 +66,33 @@ namespace ProjectLauncherTemplate.ViewModels
                 Console.WriteLine($"[DEBUG] Remote Version: {_latestVersion.Version}");
                 Console.WriteLine($"[DEBUG] Local Version: {localVer}");
 
-                // Simple string comparison or proper version parsing. using string for now.
                 if (IsNewerVersion(_latestVersion.Version, localVer))
                 {
-                    StatusText = $"New version available: v{_latestVersion.Version}";
-                    IsUpdateButtonVisible = true;
+                    // Check if installed. If not, showing Update is fine, but Install is better UI.
+                    if (!_gameService.IsGameInstalled(_settingsService.Settings.InstallPath))
+                    {
+                        StatusText = "Game not installed";
+                        IsInstallButtonVisible = true;
+                    }
+                    else
+                    {
+                        StatusText = $"New version available: v{_latestVersion.Version}";
+                        IsUpdateButtonVisible = true;
+                    }
                 }
                 else
                 {
-                    StatusText = "Ready to play";
-                    IsPlayButtonVisible = true;
+                    // Versions match (or local is newer)
+                    if (!_gameService.IsGameInstalled(_settingsService.Settings.InstallPath))
+                    {
+                        StatusText = "Game not installed";
+                        IsInstallButtonVisible = true;
+                    }
+                    else
+                    {
+                        StatusText = "Ready to play";
+                        IsPlayButtonVisible = true;
+                    }
                 }
             }
             else
@@ -81,6 +102,12 @@ namespace ProjectLauncherTemplate.ViewModels
                 if (_gameService.IsGameInstalled(_settingsService.Settings.InstallPath))
                 {
                     IsPlayButtonVisible = true;
+                }
+                else
+                {
+                     // Offline and not installed? Show Install (which will fail) or just wait.
+                     // But we can show Install which might retry logic
+                     IsInstallButtonVisible = true; 
                 }
             }
 
@@ -110,6 +137,7 @@ namespace ProjectLauncherTemplate.ViewModels
 
             StatusText = "Downloading update...";
             IsUpdateButtonVisible = false;
+            IsInstallButtonVisible = false;
             IsPlayButtonVisible = false;
             IsProgressVisible = true;
             Progress = 0;
@@ -127,7 +155,9 @@ namespace ProjectLauncherTemplate.ViewModels
             catch (Exception ex)
             {
                 StatusText = $"Update failed: {ex.Message}";
-                IsUpdateButtonVisible = true; // Retry allowed
+                // Restore button state based on condition
+                // For simplicity, just show Update button or Install button again
+                IsUpdateButtonVisible = true; 
             }
             finally
             {

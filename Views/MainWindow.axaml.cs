@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using ProjectLauncherTemplate.ViewModels;
 using System;
@@ -44,8 +45,13 @@ namespace ProjectLauncherTemplate.Views
             Close();
         }
 
-        private LibVLCSharp.Shared.LibVLC _libVLC;
-        private LibVLCSharp.Shared.MediaPlayer _mediaPlayer;
+        private void TitleBar_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            BeginMoveDrag(e);
+        }
+
+        private LibVLCSharp.Shared.LibVLC _libVLC = null!;
+        private LibVLCSharp.Shared.MediaPlayer _mediaPlayer = null!;
 
         protected override void OnOpened(EventArgs e)
         {

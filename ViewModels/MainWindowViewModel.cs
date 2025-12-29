@@ -68,7 +68,6 @@ namespace ProjectLauncherTemplate.ViewModels
 
                 if (IsNewerVersion(_latestVersion.Version, localVer))
                 {
-                    // Check if installed. If not, showing Update is fine, but Install is better UI.
                     if (!_gameService.IsGameInstalled(_settingsService.Settings.InstallPath))
                     {
                         StatusText = "Game not installed";
@@ -105,8 +104,6 @@ namespace ProjectLauncherTemplate.ViewModels
                 }
                 else
                 {
-                     // Offline and not installed? Show Install (which will fail) or just wait.
-                     // But we can show Install which might retry logic
                      IsInstallButtonVisible = true; 
                 }
             }
@@ -116,8 +113,6 @@ namespace ProjectLauncherTemplate.ViewModels
 
         private bool IsNewerVersion(string remote, string local)
         {
-            // Simple helper to compare versions. 
-            // In a real app, use Version.Parse
             try
             {
                 var v1 = new Version(remote);
@@ -155,8 +150,6 @@ namespace ProjectLauncherTemplate.ViewModels
             catch (Exception ex)
             {
                 StatusText = $"Update failed: {ex.Message}";
-                // Restore button state based on condition
-                // For simplicity, just show Update button or Install button again
                 IsUpdateButtonVisible = true; 
             }
             finally
@@ -188,16 +181,6 @@ namespace ProjectLauncherTemplate.ViewModels
         [RelayCommand]
         private void OpenSettings()
         {
-            // Logic to open settings window. 
-            // Needs generic way to open window or reference to view.
-            // For MVVM purity, usually use a service or event.
-            // For simplicity here, we might just expose an event or use a messenger.
-            // But I'll handle window creation in View for this specific command or use a simple action.
-            // Actually, I can use a simpler approach: define a weak action or similar.
-            // Let's rely on the View binding to a command that the View handles, OR
-            // pass a WindowService. 
-            // I'll make this method fire an event or let the View handle the "Settings" button click code-behind to open the specific window.
-            // Or I can add a `SettingsRequested` event.
             SettingsRequested?.Invoke(this, EventArgs.Empty);
         }
 

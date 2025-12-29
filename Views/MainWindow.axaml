@@ -40,7 +40,7 @@
             
             <!-- Custom Title Bar Area -->
             <Grid Grid.Row="0" Height="30" Background="Transparent" ColumnDefinitions="Auto, *" PointerPressed="TitleBar_PointerPressed">
-                <TextBlock Text="Launcher Test" Foreground="White" VerticalAlignment="Center" Margin="15,0,0,0" FontWeight="Bold" LetterSpacing="2"/>
+                <TextBlock Text="Launcher Template" Foreground="White" VerticalAlignment="Center" Margin="15,0,0,0" FontWeight="Bold" LetterSpacing="2"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5" Margin="0,0,10,0">
                     <Button Name="MinimizeButton" Background="Transparent" Padding="5" CornerRadius="5" Click="MinimizeButton_Click">
                          <Image Source="/Assets/minimize.png" Width="20" Height="20"/>
